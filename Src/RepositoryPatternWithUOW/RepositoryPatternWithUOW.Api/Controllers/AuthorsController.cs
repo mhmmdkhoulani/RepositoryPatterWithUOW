@@ -9,33 +9,35 @@ namespace RepositoryPatternWithUOW.Api.Controllers
     [ApiController]
     public class AuthorsController : ControllerBase
     {
-        private readonly IBaseRepository<Author> _repo;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public AuthorsController(IBaseRepository<Author> repo)
+        public AuthorsController(IUnitOfWork unitOfWork)
         {
-            _repo = repo;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            return Ok(_repo.GetById(id));
+            return Ok(_unitOfWork.Authors.GetById(id));
         }
         [HttpGet("GetByName/{name}")]
         public IActionResult GetById(string name)
         {
-            return Ok(_repo.Find(b => b.Name == name, new string[] {"Author"}));
+            return Ok(_unitOfWork.Authors.Find(b => b.Name == name, new string[] {"Author"}));
         }
         [HttpGet]
         public IActionResult GetAll()
         {
-            return Ok(_repo.GetAll());
+            return Ok(_unitOfWork.Authors.GetAll());
         }
 
         [HttpPost]
         public IActionResult AddAuthor(Author author)
         {
-            return Ok(_repo.Add(author));
+            var result = _unitOfWork.Authors.Add(author);
+            _unitOfWork.Complete();
+            return Ok(author);
         }
     }
 }

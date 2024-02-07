@@ -22,11 +22,32 @@ namespace RepositoryPatternWithUOW.EF.Repositories
         public T Add(T model)
         {
             _context.Set<T>().Add(model);
-            _context.SaveChanges();
             return model;
         }
 
-        public T Find(Expression<Func<T, bool>> mtach, string[] includes = null)
+        public T Update(T model)
+        {
+            _context.Update(model);
+            return model;
+        }
+
+        public T Delete(T model)
+        {
+            _context.Set<T>().Remove(model);
+            return model;
+        }
+
+        public T Attach(T model)
+        {
+            _context.Set<T>().Attach(model);
+            return model;
+        }
+        public int Count()
+        {
+            return _context.Set<T>().Count(); ;
+        }
+
+        public T Find(Expression<Func<T, bool>> criteria, string[] includes = null)
         {
             IQueryable<T> query = _context.Set<T>();
             if(includes.Length > 0 )
@@ -36,10 +57,10 @@ namespace RepositoryPatternWithUOW.EF.Repositories
                     query = query.Include(include);
                 }
             }
-            return query.SingleOrDefault(mtach);
+            return query.SingleOrDefault(criteria);
         }
 
-        public IEnumerable<T> FindAll(Expression<Func<T, bool>> mtach, string[] includes = null)
+        public IEnumerable<T> FindAll(Expression<Func<T, bool>> criteria, string[] includes = null)
         {
             IQueryable<T> query = _context.Set<T>();
             if (includes.Length > 0)
@@ -49,12 +70,12 @@ namespace RepositoryPatternWithUOW.EF.Repositories
                     query = query.Include(include);
                 }
             }
-            return query.Where(mtach).ToList();
+            return query.Where(criteria).ToList();
         }
 
-        public IEnumerable<T> FindAll(Expression<Func<T, bool>> mtach, int? take, int? skip, Expression<Func<T, object>> orderBy = null, string orderByDirection = "ASC")
+        public IEnumerable<T> FindAll(Expression<Func<T, bool>> criteria, int? take, int? skip, Expression<Func<T, object>> orderBy = null, string orderByDirection = "ASC")
         {
-            IQueryable<T> query = _context.Set<T>().Where(mtach);
+            IQueryable<T> query = _context.Set<T>().Where(criteria);
 
             if(take.HasValue)
                 query = query.Take(take.Value);

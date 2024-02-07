@@ -10,23 +10,23 @@ namespace RepositoryPatternWithUOW.Api.Controllers
     [ApiController]
     public class BooksController : ControllerBase
     {
-        private readonly IBaseRepository<Book> _repo;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public BooksController(IBaseRepository<Book> repo)
+        public BooksController(IUnitOfWork unitOfWork)
         {
-            _repo = repo;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            return Ok(_repo.GetById(id));
+            return Ok(_unitOfWork.Books.GetById(id));
         }
 
         [HttpGet("GetByName/{name}")]
         public IActionResult GetById(string name)
         {
-            return Ok(_repo.Find(b => b.Title == name,new string[] { "Author" }));
+            return Ok(_unitOfWork.Books.Find(b => b.Title == name,new string[] { "Author" }));
         }
 
 
@@ -34,25 +34,31 @@ namespace RepositoryPatternWithUOW.Api.Controllers
         [HttpGet("GetAll")]
         public IActionResult GetAllWithAuthor(string name)
         {
-            return Ok(_repo.FindAll(b => b.Title == name, new string[] { "Author" }));
+            return Ok(_unitOfWork.Books.FindAll(b => b.Title == name, new string[] { "Author" }));
         }
 
         [HttpGet("GetOrdered")]
         public IActionResult GetAllWithAuthorOrderd(string name)
         {
-            return Ok(_repo.FindAll(b => b.Title == name, null, null, b => b.Id, OrderBy.Descending));
+            return Ok(_unitOfWork.Books.FindAll(b => b.Title == name, null, null, b => b.Id, OrderBy.Descending));
         }
 
         [HttpGet]
         public IActionResult GetAll()
         {
-            return Ok(_repo.GetAll());
+            return Ok(_unitOfWork.Books.GetAll());
         }
 
         [HttpPost]
         public IActionResult AddBook(Book book)
         {
-            return Ok(_repo.Add(book));
+            return Ok(_unitOfWork.Books.Add(book));
+        }
+
+        [HttpGet("special")]
+        public IActionResult GetSpecial(Book book)
+        {
+            return Ok(_unitOfWork.Books.SpecialMethod());
         }
     }
 }

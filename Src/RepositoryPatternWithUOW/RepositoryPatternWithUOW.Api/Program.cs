@@ -19,7 +19,8 @@ builder.Services.AddDbContext<ApplicationDbConetxt>(options =>
 });
 
 //Add services 
-builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+//builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

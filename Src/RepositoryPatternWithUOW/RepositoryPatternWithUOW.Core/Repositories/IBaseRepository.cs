@@ -12,10 +12,14 @@ namespace RepositoryPatternWithUOW.Core.Repositories
     {
         T GetById(int id);
         T Add(T model);
+        T Update(T model);
+        T Delete(T model);
+        T Attach(T model);
+        int Count();    
         IEnumerable<T> GetAll();
-        T Find(Expression<Func<T, bool>> mtach, string[] includes = null);
-        IEnumerable<T> FindAll(Expression<Func<T, bool>> mtach, string[] includes = null);
-        IEnumerable<T> FindAll(Expression<Func<T, bool>> mtach, int? take, int? skip, Expression<Func<T, object>> orderBy = null, string orderByDirection = OrderBy.Ascending);
+        T Find(Expression<Func<T, bool>> criteria, string[] includes = null);
+        IEnumerable<T> FindAll(Expression<Func<T, bool>> criteria, string[] includes = null);
+        IEnumerable<T> FindAll(Expression<Func<T, bool>> criteria, int? take, int? skip, Expression<Func<T, object>> orderBy = null, string orderByDirection = OrderBy.Ascending);
 
     }
 }
